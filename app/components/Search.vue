@@ -1,9 +1,22 @@
 <template>
-    <Page actionBarHidden='true'>
-        <StackLayout>
-            <Label text='search'></Label>
-            <TextField v-model='city' @returnPress='buildUrl' hint='Enter city'></TextField>
-        </StackLayout>
+    <Page
+        actionBarHidden='true'>
+        <FlexboxLayout
+            alignItems='center'
+            flexDirection='column'
+            justifyContent='center'
+            class='view-container'>
+            <TextField
+                v-model='city'
+                @returnPress='search'
+                @focus='onFocus'
+                @blur='isFocused = false'
+                hint='enter location'
+                :class='{ "focused": isFocused }'></TextField>
+            <Label
+                v-if='noLocation'
+                text='no location'></Label>
+        </FlexboxLayout>
     </Page>
 </template>
 
@@ -17,23 +30,55 @@
         data() {
             return {
                 url: '',
+                isFocused: false,
+                noLocation: false,
+                city: ''
             }
         },
-        computed() {
-            this.city = ''
-        },
         methods: {
-            buildUrl() {
-                let city = this.city.toLowerCase().trim();
-                this.url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city;
-                console.log(this.url)
+            search() {
+                let city = this.city ? this.city.toLowerCase().trim() : ''
 
-                this.$navigateTo(Weather, {
-                    props: {
-                        url: this.url
-                    }
-                })
+                if (city) {
+                    this.url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city
+
+                    this.$navigateTo(Weather, {
+                        props: {
+                            url: this.url
+                        }
+                    })
+                } else {
+                    this.noLocation = true
+                }
+
+            },
+            onFocus() {
+                this.noLocation = false
             },
         }
     }
 </script>
+
+<style scoped>
+
+.view-container {
+    margin: 50 30;
+}
+
+TextField {
+    border-width: 1;
+    border-color: #6bc5da;
+    background-color: white;
+    font-family: 'Quicksand';
+    padding: 20 30;
+    border-radius: 50;
+    font-size: 20;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+TextField.focused {
+    animation-name: pulse;
+    animation-duration: 0.3s;
+}
+</style>

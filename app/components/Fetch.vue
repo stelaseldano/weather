@@ -12,7 +12,8 @@
                 max: '',
                 description: '',
                 country: '',
-                image: ''
+                image: '',
+                cod: ''
             }
         },
         created() {
@@ -27,7 +28,8 @@
                     this.max = Math.round(result.main.temp_max).toString() + '°'
                     this.mix = Math.round(result.main.temp_min).toString() + '°'
                     this.description = result.weather[0].description
-                    this.country = result.sys.country
+                    this.country = result.sys.country,
+                    this.cod = result.cod
                 })
                 .catch(err => {
                     console.log(err)
@@ -58,7 +60,8 @@
                 min: this.mix,
                 description: this.description,
                 country: this.country,
-                image: this.setImage(this.description)
+                image: this.setImage(this.description),
+                cod: this.cod
             })
         }
     }
