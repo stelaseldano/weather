@@ -22,7 +22,7 @@
                     <template v-for='(item, index) in savedCities'>
                         <Button
                             :key='index'
-                            :text='item'
+                            :text='item.split("+").join(" ")'
                             @tap='toWeather(item)'></Button>
                     </template>
                 </StackLayout>
@@ -84,11 +84,10 @@
             },
             saveCity() {
                 const localCities = appSettings.getString('city')
-                const city = this.$refs.city.nativeView.text
+                const city = this.$refs.city.nativeView.text.split(' ').join('+')
 
                 if (localCities) {
-                    let list = localCities.split(' ');
-
+                    let list = localCities.split(' ')
                     if (!list.includes(city)) {
                         appSettings.setString('city', localCities + ' ' + city)
                         this.savedCities.push(city)
