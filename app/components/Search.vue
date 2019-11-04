@@ -22,6 +22,7 @@
 
 <script>
     import Weather from './Weather'
+    import { fetchForecast, setImage } from '../upstream'
 
     export default {
         components: {
@@ -42,17 +43,35 @@
                 if (city) {
                     this.url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city
 
-                    this.$navigateTo(Weather, {
-                        props: {
-                            url: this.url
-                        }
-                    })
+                    fetchForecast(this.url)
+                        .then(result => {
+                            if (result.cod === 200) {
+                                this.$navigateTo(Weather, {
+                                    props: {
+                                        response: {
+                                            name: result.name,
+                                            temp: Math.round(result.main.temp).toString() + '°',
+                                            max: Math.round(result.main.temp_max).toString() + '°',
+                                            min: Math.round(result.main.temp_min).toString() + '°',
+                                            image: setImage(result.weather[0].description),
+                                            description: result.weather[0].description,
+                                            country: result.sys.country,
+                                            cod: result.cod
+                                        }
+                                    }
+                                })
+                            } else {
+                                this.noLocation = true
+                            }
+                        })
+                        
                 } else {
                     this.noLocation = true
                 }
 
             },
             onFocus() {
+                this.isFocused = true
                 this.noLocation = false
             },
         }

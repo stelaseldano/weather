@@ -28,34 +28,27 @@
                 </StackLayout>
             </ScrollView>
 
-            <Fetch
-                :url='url'
+            <StackLayout
                 row='2'
                 colSpan='2'>
-                <StackLayout slot-scope="{ name, temp, min, max, description, image, cod }">
-                    <GridLayout 
-                        v-if='cod === 200'
-                        rows='*, 80' verticalAlignment='center'>
-                        <StackLayout row='0'>
-                            <Image :src='image'></Image>
-                            <Label :text='temp' class='temp current'></Label>
-                            <Label ref='city' :text='name' class='location'></Label>
-                        </StackLayout>
+                <GridLayout 
+                    rows='*, 80' verticalAlignment='center'>
+                    <StackLayout row='0'>
+                        <Image :src='response.image'></Image>
+                        <Label :text='response.temp' class='temp current'></Label>
+                        <Label ref='city' :text='response.name' class='location'></Label>
+                    </StackLayout>
 
-                        <FlexboxLayout
-                            row='1'
-                            alignItems='flex-end'
-                            justifyContent='space-around'
-                            class='temperature-container'>
-                            <Label :text='"min " + min' class='temp min'></Label>
-                            <Label :text='"max " + max' class='temp max'></Label>
-                        </FlexboxLayout>
-                    </GridLayout>
-
-                    <StackLayout
-                        v-else></StackLayout>
-                </StackLayout>
-            </Fetch>
+                    <FlexboxLayout
+                        row='1'
+                        alignItems='flex-end'
+                        justifyContent='space-around'
+                        class='temperature-container'>
+                        <Label :text='"min " + response.min' class='temp min'></Label>
+                        <Label :text='"max " + response.max' class='temp max'></Label>
+                    </FlexboxLayout>
+                </GridLayout>
+            </StackLayout>
         </GridLayout>
     </Page>
 </template>
@@ -63,21 +56,19 @@
 <script>
     const appSettings = require("tns-core-modules/application-settings")
     var SwipeDirection = require("tns-core-modules/ui/gestures").SwipeDirection
-    var labelModule = require("tns-core-modules/ui/label");
+    import { fetchForecast, setImage } from '../upstream'
 
-    import Fetch from './Fetch'
     import Search from './Search'
     import Weather from './Weather'
 
     export default {
         name: 'Weather',
         components: {
-            Fetch,
             Search,
             Weather
         },
         props: {
-            url: String,
+            response: Object,
         },
         data() {
             return {
@@ -108,6 +99,31 @@
                 this.savedCities.push(city)
             },
             toWeather(city) {
+                let url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city
+
+                fetchForecast(url)
+                    .then(result => {
+                        if (result.cod === 200) {
+                            this.$navigateTo(Weather, {
+                                props: {
+                                    response: {
+                                        name: result.name,
+                                        temp: Math.round(result.main.temp).toString() + '°',
+                                        max: Math.round(result.main.temp_max).toString() + '°',
+                                        min: Math.round(result.main.temp_min).toString() + '°',
+                                        image: setImage(result.weather[0].description),
+                                        description: result.weather[0].description,
+                                        country: result.sys.country,
+                                        cod: result.cod
+                                    }
+                                }
+                            })
+                        } else {
+                            this.noLocation = true
+                        }
+                    })
+
+                
                 this.$navigateTo(Weather, {
                     props: {
                         url: "https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=" + city

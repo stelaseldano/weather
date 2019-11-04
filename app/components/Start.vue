@@ -7,7 +7,8 @@
 <script>
     const geolocation = require("nativescript-geolocation")
     const appSettings = require("tns-core-modules/application-settings")
-    const accuracy = require("tns-core-modules/ui/enums");
+    const accuracy = require("tns-core-modules/ui/enums")
+    import { fetchForecast, setImage } from '../upstream'
     import Search from './Search'
     import Weather from './Weather'
 
@@ -20,24 +21,51 @@
                 })
                 .then(location => {
                     let url = "https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431" + "&units=metric&lat=" + location.latitude + "&lon=" + location.longitude;
-                    this.$navigateTo(Weather, {
-                        props: {
-                            url: url
-                        }
-                    })
+                    
+                    fetchForecast(url)
+                        .then(result => {
+                            this.$navigateTo(Weather, {
+                                props: {
+                                    response: {
+                                        name: result.name,
+                                        temp: Math.round(result.main.temp).toString() + '°',
+                                        max: Math.round(result.main.temp_max).toString() + '°',
+                                        min: Math.round(result.main.temp_min).toString() + '°',
+                                        image: setImage(result.weather[0].description),
+                                        description: result.weather[0].description,
+                                        country: result.sys.country,
+                                        cod: result.cod
+                                    }
+                                }
+                            })
+                        })
                 })
                 .catch(err => {
                     let cities = appSettings.getString('city')
                     let savedCities
 
                     if (cities) {
-                        savedCities = cities.split(' ')
+                        let url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + cities.split(' ')[0]
 
-                        this.$navigateTo(Weather, {
-                            props: {
-                                url: "https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=" + savedCities[0]
-                            }
-                        })
+                        fetchForecast(url)
+                            .then(result => {
+                                this.$navigateTo(Weather, {
+                                    props: {
+                                        response: {
+                                            name: result.name,
+                                            temp: Math.round(result.main.temp).toString() + '°',
+                                            max: Math.round(result.main.temp_max).toString() + '°',
+                                            min: Math.round(result.main.temp_min).toString() + '°',
+                                            image: setImage(result.weather[0].description),
+                                            description: result.weather[0].description,
+                                            country: result.sys.country,
+                                            cod: result.cod
+                                        }
+                                    }
+                                })
+                            })
+
+                        
                     } else {
                         this.$navigateTo(Search)
                     }
