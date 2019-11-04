@@ -14,65 +14,45 @@
                 hint='enter location'
                 :class='{ "focused": isFocused }'></TextField>
             <Label
-                v-if='noLocation'
-                text='no location'></Label>
+                v-if='locationError'
+                :text='locErrorMessage'></Label>
         </FlexboxLayout>
     </Page>
 </template>
 
 <script>
     import Weather from './Weather'
-    import { fetchForecast, setImage } from '../upstream'
+    import { fetchForecast } from '../upstream'
+    import { mixin } from '../mixins'
 
     export default {
         components: {
             Weather
         },
+        mixins: [mixin],
         data() {
             return {
                 url: '',
                 isFocused: false,
-                noLocation: false,
-                city: ''
+                city: '',
             }
         },
         methods: {
             search() {
-                let city = this.city ? this.city.toLowerCase().trim() : ''
+                let city = this.city ? this.city.toLowerCase().trim().split(' ').join('+') : ''
 
                 if (city) {
                     this.url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city
 
-                    fetchForecast(this.url)
-                        .then(result => {
-                            if (result.cod === 200) {
-                                this.$navigateTo(Weather, {
-                                    props: {
-                                        response: {
-                                            name: result.name,
-                                            temp: Math.round(result.main.temp).toString() + '°',
-                                            max: Math.round(result.main.temp_max).toString() + '°',
-                                            min: Math.round(result.main.temp_min).toString() + '°',
-                                            image: setImage(result.weather[0].description),
-                                            description: result.weather[0].description,
-                                            country: result.sys.country,
-                                            cod: result.cod
-                                        }
-                                    }
-                                })
-                            } else {
-                                this.noLocation = true
-                            }
-                        })
-                        
+                    this.aMethod(this.url)
                 } else {
-                    this.noLocation = true
+                    this.locationError = true
+                    this.locErrorMessage = 'nothing entered'
                 }
-
             },
             onFocus() {
                 this.isFocused = true
-                this.noLocation = false
+                this.locationError = false
             },
         }
     }

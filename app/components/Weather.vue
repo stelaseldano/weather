@@ -56,10 +56,9 @@
 <script>
     const appSettings = require("tns-core-modules/application-settings")
     var SwipeDirection = require("tns-core-modules/ui/gestures").SwipeDirection
-    import { fetchForecast, setImage } from '../upstream'
-
     import Search from './Search'
     import Weather from './Weather'
+    import { mixin } from '../mixins'
 
     export default {
         name: 'Weather',
@@ -67,6 +66,7 @@
             Search,
             Weather
         },
+        mixins: [mixin],
         props: {
             response: Object,
         },
@@ -91,44 +91,17 @@
 
                     if (!list.includes(city)) {
                         appSettings.setString('city', localCities + ' ' + city)
+                        this.savedCities.push(city)
                     }
                 } else {
                     appSettings.setString('city', city)
                 }
-
-                this.savedCities.push(city)
+        
             },
             toWeather(city) {
                 let url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city
 
-                fetchForecast(url)
-                    .then(result => {
-                        if (result.cod === 200) {
-                            this.$navigateTo(Weather, {
-                                props: {
-                                    response: {
-                                        name: result.name,
-                                        temp: Math.round(result.main.temp).toString() + '°',
-                                        max: Math.round(result.main.temp_max).toString() + '°',
-                                        min: Math.round(result.main.temp_min).toString() + '°',
-                                        image: setImage(result.weather[0].description),
-                                        description: result.weather[0].description,
-                                        country: result.sys.country,
-                                        cod: result.cod
-                                    }
-                                }
-                            })
-                        } else {
-                            this.noLocation = true
-                        }
-                    })
-
-                
-                this.$navigateTo(Weather, {
-                    props: {
-                        url: "https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=" + city
-                    }
-                })
+                this.aMethod(url)
             },
             onSwipe(args) {
                 let direction =
