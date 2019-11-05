@@ -44,7 +44,7 @@
                 if (city) {
                     this.url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city
 
-                    this.aMethod(this.url)
+                    this.getData(this.url)
                 } else {
                     this.locationError = true
                     this.locErrorMessage = 'nothing entered'
@@ -65,15 +65,16 @@
 }
 
 TextField {
-    border-width: 1;
+    border-width: 2;
     border-color: #6bc5da;
     background-color: white;
     font-family: 'Quicksand';
     padding: 20 30;
     border-radius: 50;
     font-size: 20;
+    font-weight: bold;
     text-transform: uppercase;
-    width: 100%;
+    width: 300;
 }
 
 TextField.focused {

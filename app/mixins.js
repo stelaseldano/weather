@@ -9,11 +9,14 @@ export const mixin = {
         }
     },
     methods: {
-        aMethod(url) {
+        getData(url) {
             fetchForecast(url)
                 .then(data => {
                     if (data.cod === 200) {
                         this.$navigateTo(Weather, {
+                            transition: {
+                                name: 'fade'
+                            },
                             props: {
                                 response: data
                             }

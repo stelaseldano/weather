@@ -1,46 +1,52 @@
 <template>
     <Page actionBarHidden='true'
         enableSwipeBackNavigation='false'
-        backgroundSpanUnderStatusBar='true'
-        @swipe='onSwipe'>
+        backgroundSpanUnderStatusBar='true'>
         <GridLayout
-            rows='50, 20, *'
-            columns='*, 50'
+            rows='30, *, 50'
             class='view-container'>
-            <StackLayout row='0'>
+            <FlexboxLayout
+                row='0'
+                justifyContent='space-between'>
+                <Button
+                    v-if='showSaveButton'
+                    text='save city'
+                    @tap='saveCity'></Button>
                 <Button
                     text='search'
                     @tap='toSearch'>
                     </Button>
-                <Button
-                    text='save city'
-                    @tap='saveCity'></Button>
-            </StackLayout>
+            </FlexboxLayout>
 
-            <ScrollView row='1' orientation='horizontal'>
-                <StackLayout orientation='horizontal'>
+            <ScrollView row='2' orientation='horizontal' class='saved-cities-wrapper'>
+                <StackLayout orientation='horizontal' class='saved-cities'>
                     <template v-for='(item, index) in savedCities'>
-                        <Button
-                            :key='index'
-                            :text='item.split("+").join(" ")'
-                            @tap='toWeather(item)'></Button>
+                        <StackLayout orientation='horizontal' class='city-item' :key='index'>
+                            <Button
+                                :text='item.split("+").join(" ")'
+                                @tap='toWeather(item)'
+                                class='city-btn'></Button>
+                            <Button
+                                text='-'
+                                @tap='removeCity(item, index)'
+                                class='remove-btn'></Button>
+                        </StackLayout>
                     </template>
                 </StackLayout>
             </ScrollView>
 
             <StackLayout
-                row='2'
-                colSpan='2'>
+                row='1'>
                 <GridLayout 
                     rows='*, 80' verticalAlignment='center'>
                     <StackLayout row='0'>
                         <Image :src='response.image'></Image>
                         <Label :text='response.temp' class='temp current'></Label>
-                        <Label ref='city' :text='response.name' class='location'></Label>
+                        <Label :text='response.name' class='location'></Label>
                     </StackLayout>
 
                     <FlexboxLayout
-                        row='1'
+                        row='2'
                         alignItems='flex-end'
                         justifyContent='space-around'
                         class='temperature-container'>
@@ -55,7 +61,6 @@
 
 <script>
     const appSettings = require("tns-core-modules/application-settings")
-    var SwipeDirection = require("tns-core-modules/ui/gestures").SwipeDirection
     import Search from './Search'
     import Weather from './Weather'
     import { mixin } from '../mixins'
@@ -72,47 +77,62 @@
         },
         data() {
             return {
-                savedCities: []
+                savedCities: [],
+                showSaveButton: true,
             }
         },
         created() {
             this.savedCities = this.getSavedCities()
+            this.city = this.response.name.split(' ').join('+')
+
+            if (this.savedCities.includes(this.city)) {
+                this.showSaveButton = false
+            } else {
+                this.showSaveButton = true
+            }
+        },
+        watch: {
+            savedCities(newState) {
+                if (newState.includes(this.city)) {
+                    this.showSaveButton = false
+                } else {
+                    this.showSaveButton = true
+                }
+            }
         },
         methods: {
             toSearch() {
-                this.$navigateTo(Search)
+                this.$navigateTo(Search, {
+                    transition: {
+                        name: 'fade'
+                    }
+                })
             },
             saveCity() {
                 const localCities = appSettings.getString('city')
-                const city = this.$refs.city.nativeView.text.split(' ').join('+')
 
                 if (localCities) {
-                    let list = localCities.split(' ')
-                    if (!list.includes(city)) {
-                        appSettings.setString('city', localCities + ' ' + city)
-                        this.savedCities.push(city)
+                    const list = localCities.split(' ')
+                    if (!list.includes(this.city)) {
+                        appSettings.setString('city', localCities + ' ' + this.city)
+                        this.savedCities.push(this.city)
                     }
                 } else {
-                    appSettings.setString('city', city)
+                    appSettings.setString('city', this.city)
+                    this.savedCities.push(this.city)
                 }
-        
+            },
+            removeCity(item, index) {
+                const localCities = appSettings.getString('city')
+                let list = localCities.split(' ')
+                list.splice(index, 1)
+                appSettings.setString('city', list.join(' '))
+                this.savedCities.splice(index, 1)
             },
             toWeather(city) {
                 let url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city
 
-                this.aMethod(url)
-            },
-            onSwipe(args) {
-                let direction =
-                args.direction == SwipeDirection.down
-                    ? "down"
-                    : args.direction == SwipeDirection.up
-                        ? "up"
-                        : args.direction == SwipeDirection.left
-                            ? "left"
-                            : "right";
-                
-                console.log('SWIPE DIRECTION ', direction)
+                this.getData(url)
             },
             getSavedCities() {
                 const localCities = appSettings.getString('city')
@@ -130,7 +150,7 @@
 <style scoped>
 
 .view-container {
-    margin: 20;
+    margin: 20 20 0 20;
 }
 
 Label {
@@ -158,12 +178,35 @@ Label {
 .location {
     font-size: 20;
     font-weight: 300;
-    margin: 30 20;
     text-transform: uppercase;
+    margin: 20 0;
 }
 
 Image {
     height: 250;
     width: 250;
+}
+
+.saved-cities-wrapper {
+    background-color: white;
+}
+
+.saved-cities {
+    margin: 0;
+}
+
+.city-item {
+    padding: 0;
+    margin: 0 12;
+    background-color: #fdfdfd;
+}
+
+.remove-btn {
+    border-radius: 50%;
+    margin: 0 0 0 5;
+    padding: 0;
+    background-color: #ededed;
+    height: 15;
+    width: 15;
 }
 </style>
