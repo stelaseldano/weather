@@ -1,23 +1,6 @@
 <template>
     <Page
         actionBarHidden='true'>
-        <!-- <FlexboxLayout
-            alignItems='center'
-            flexDirection='column'
-            justifyContent='space-between'
-            class='view-container'>
-            <Label
-                v-if='locationError'
-                class='error-message'
-                :text='locErrorMessage'></Label>
-            <TextField
-                v-model='city'
-                @returnPress='search'
-                @focus='onFocus'
-                @blur='isFocused = false'
-                hint='enter location'></TextField>
-        </FlexboxLayout> -->
-
         <GridLayout rows='100, *'>
             <StackLayout row='0'>
                 <Label
@@ -94,6 +77,7 @@ GridLayout {
     color: white;
     font-weight: bold;
     text-align: center;
+    width: 400;
 }
 
 TextField {
@@ -106,7 +90,7 @@ TextField {
     font-size: 20;
     font-weight: bold;
     text-transform: uppercase;
-    width: 100%;
+    width: 300;
     margin: 50 30 0 30;
 }
 </style>

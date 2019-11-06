@@ -3,7 +3,7 @@
         enableSwipeBackNavigation='false'
         backgroundSpanUnderStatusBar='true'>
         <GridLayout
-            rows='50, *, 60'
+            rows='70, *, 60'
             class='view-container'>
             <FlexboxLayout
                 row='0'
@@ -11,12 +11,14 @@
                 margin='0 20'>
                 <StackLayout>
                     <Button
+                        android:class='btn btn-primary'
                         v-if='showSaveButton'
                         text='save city'
                         @tap='saveCity'></Button>
                 </StackLayout>
                 <StackLayout>
                     <Button
+                        android:class='btn btn-primary'
                         text='search'
                         @tap='toSearch'></Button>
                 </StackLayout>
@@ -27,9 +29,10 @@
                     <template v-for='(item, index) in savedCities'>
                         <StackLayout orientation='horizontal' verticalAlignment='middle' class='city-item' :key='index'>
                             <Button
+                                android:class='andro-city-btn'
+                                ios:class='ios-city-btn'
                                 :text='item.split("+").join(" ")'
-                                @tap='toWeather(item)'
-                                class='city-btn'></Button>
+                                @tap='toWeather(item)'></Button>
                             <StackLayout
                                 height='30'
                                 verticalAlignment='middle'
@@ -43,6 +46,7 @@
             </ScrollView>
 
             <StackLayout
+                verticalAlignment='middle'
                 row='1'>
                 <GridLayout 
                     rows='*, 80' verticalAlignment='center'>
@@ -164,6 +168,7 @@ Label {
     font-family: 'Quicksand';
     text-align: center;
     font-weight: 300;
+    color: black;
 }
 
 .temperature-container {
@@ -212,16 +217,40 @@ Image {
     width: 30;
 }
 
-.city-btn {
-    font-family: 'Lato';
-    color: black;
-    font-weight: bold;
-}
 
 .remove-btn {
     border-radius: 0;
     background-color: transparent;
     margin: 0 0 0 6;
     padding: 0;
+}
+
+.btn {
+    color: white;
+    background-color: #6bc5da;
+    min-height: 36;
+    min-width: 64;
+    padding: 10 10 10 10;
+    font-size: 14;
+    margin: 0;
+}
+
+.ios-city-btn {
+    font-family: 'Lato';
+    color: black;
+    font-weight: bold;
+}
+
+.andro-city-btn {
+    color: #6bc5da;
+    border-width: 1;
+    border-color: #6bc5da;
+    border-radius: 50;
+    padding: 0 10 0 10;
+    min-height: 26;
+    height: 26;
+    line-height: 12;
+    text-transform: capitalize;
+    margin: 8;
 }
 </style>
