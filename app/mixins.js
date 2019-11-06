@@ -23,12 +23,12 @@ export const mixin = {
                         })
                     } else {
                         this.locationError = true,
-                        this.locErrorMessage = data.message
+                        this.locErrorMessage = data.message + ' 😢'
                     }
                 })
                 .catch(err => {
                     this.locationError = true,
-                    this.locErrorMessage = 'unsupported symbol'
+                    this.locErrorMessage = 'unsupported symbol 😢'
                 })
         }
     }

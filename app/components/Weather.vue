@@ -3,33 +3,40 @@
         enableSwipeBackNavigation='false'
         backgroundSpanUnderStatusBar='true'>
         <GridLayout
-            rows='30, *, 50'
+            rows='50, *, 60'
             class='view-container'>
             <FlexboxLayout
                 row='0'
-                justifyContent='space-between'>
-                <Button
-                    v-if='showSaveButton'
-                    text='save city'
-                    @tap='saveCity'></Button>
-                <Button
-                    text='search'
-                    @tap='toSearch'>
-                    </Button>
+                justifyContent='space-between'
+                margin='0 20'>
+                <StackLayout>
+                    <Button
+                        v-if='showSaveButton'
+                        text='save city'
+                        @tap='saveCity'></Button>
+                </StackLayout>
+                <StackLayout>
+                    <Button
+                        text='search'
+                        @tap='toSearch'></Button>
+                </StackLayout>
             </FlexboxLayout>
 
-            <ScrollView row='2' orientation='horizontal' class='saved-cities-wrapper'>
+            <ScrollView row='2' orientation='horizontal' class='saved-cities-wrapper' v-if='savedCities.length > 0'>
                 <StackLayout orientation='horizontal' class='saved-cities'>
                     <template v-for='(item, index) in savedCities'>
-                        <StackLayout orientation='horizontal' class='city-item' :key='index'>
+                        <StackLayout orientation='horizontal' verticalAlignment='middle' class='city-item' :key='index'>
                             <Button
                                 :text='item.split("+").join(" ")'
                                 @tap='toWeather(item)'
                                 class='city-btn'></Button>
-                            <Button
-                                text='-'
-                                @tap='removeCity(item, index)'
-                                class='remove-btn'></Button>
+                            <StackLayout
+                                height='30'
+                                verticalAlignment='middle'
+                                class='remove-btn'
+                                @tap='removeCity(item, index)'>
+                                <Image src='~/images/icon-close.png' height='10' width='10'></Image>
+                            </StackLayout>
                         </StackLayout>
                     </template>
                 </StackLayout>
@@ -46,7 +53,7 @@
                     </StackLayout>
 
                     <FlexboxLayout
-                        row='2'
+                        row='1'
                         alignItems='flex-end'
                         justifyContent='space-around'
                         class='temperature-container'>
@@ -115,11 +122,11 @@
                     const list = localCities.split(' ')
                     if (!list.includes(this.city)) {
                         appSettings.setString('city', localCities + ' ' + this.city)
-                        this.savedCities.push(this.city)
+                        this.savedCities.unshift(this.city)
                     }
                 } else {
                     appSettings.setString('city', this.city)
-                    this.savedCities.push(this.city)
+                    this.savedCities.unshift(this.city)
                 }
             },
             removeCity(item, index) {
@@ -150,7 +157,7 @@
 <style scoped>
 
 .view-container {
-    margin: 20 20 0 20;
+    margin: 10 0 0 0;
 }
 
 Label {
@@ -160,7 +167,7 @@ Label {
 }
 
 .temperature-container {
-    height: 60;
+    height: 80;
 }
 
 .temp.current {
@@ -198,15 +205,23 @@ Image {
 .city-item {
     padding: 0;
     margin: 0 12;
-    background-color: #fdfdfd;
+}
+
+.close-btn {
+    height: 30;
+    width: 30;
+}
+
+.city-btn {
+    font-family: 'Lato';
+    color: black;
+    font-weight: bold;
 }
 
 .remove-btn {
-    border-radius: 50%;
-    margin: 0 0 0 5;
+    border-radius: 0;
+    background-color: transparent;
+    margin: 0 0 0 6;
     padding: 0;
-    background-color: #ededed;
-    height: 15;
-    width: 15;
 }
 </style>

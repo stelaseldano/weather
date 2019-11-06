@@ -1,22 +1,40 @@
 <template>
     <Page
         actionBarHidden='true'>
-        <FlexboxLayout
+        <!-- <FlexboxLayout
             alignItems='center'
             flexDirection='column'
-            justifyContent='center'
+            justifyContent='space-between'
             class='view-container'>
+            <Label
+                v-if='locationError'
+                class='error-message'
+                :text='locErrorMessage'></Label>
             <TextField
                 v-model='city'
                 @returnPress='search'
                 @focus='onFocus'
                 @blur='isFocused = false'
-                hint='enter location'
-                :class='{ "focused": isFocused }'></TextField>
-            <Label
-                v-if='locationError'
-                :text='locErrorMessage'></Label>
-        </FlexboxLayout>
+                hint='enter location'></TextField>
+        </FlexboxLayout> -->
+
+        <GridLayout rows='100, *'>
+            <StackLayout row='0'>
+                <Label
+                    v-if='locationError'
+                    class='error-message'
+                    :text='locErrorMessage'></Label>
+            </StackLayout>
+            <StackLayout row='1'>
+                <TextField
+                    ref='s'
+                    v-model='city'
+                    @returnPress='search'
+                    @focus='onFocus'
+                    @blur='isFocused = false'
+                    hint='enter location'></TextField>
+            </StackLayout>
+        </GridLayout>
     </Page>
 </template>
 
@@ -47,7 +65,7 @@
                     this.getData(this.url)
                 } else {
                     this.locationError = true
-                    this.locErrorMessage = 'nothing entered'
+                    this.locErrorMessage = 'nothing entered 🤔'
                 }
             },
             onFocus() {
@@ -58,10 +76,24 @@
     }
 </script>
 
-<style scoped>
+<style scoped> 
 
-.view-container {
-    margin: 50 30;
+GridLayout {
+    height: 100%;
+    margin: 50 20 0 20;
+}
+
+.error-message {
+    background-color: #6bc5da;
+    animation-name: pulse;
+    animation-duration: 0.3s;
+    padding: 20 30;
+    border-radius: 10;
+    margin: 0;
+    font-family: 'Lato';
+    color: white;
+    font-weight: bold;
+    text-align: center;
 }
 
 TextField {
@@ -74,11 +106,7 @@ TextField {
     font-size: 20;
     font-weight: bold;
     text-transform: uppercase;
-    width: 300;
-}
-
-TextField.focused {
-    animation-name: pulse;
-    animation-duration: 0.3s;
+    width: 100%;
+    margin: 50 30 0 30;
 }
 </style>
