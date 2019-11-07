@@ -3,10 +3,10 @@
         enableSwipeBackNavigation='false'
         backgroundSpanUnderStatusBar='true'>
         <GridLayout
-            rows='70, *, 60'
+            rows='50, *, 50'
             class='view-container'>
             <FlexboxLayout
-                row='0'
+                row='2'
                 justifyContent='space-between'
                 margin='0 20'>
                 <StackLayout>
@@ -24,38 +24,12 @@
                 </StackLayout>
             </FlexboxLayout>
 
-            <ScrollView row='2' orientation='horizontal' class='saved-cities-wrapper' v-if='savedCities.length > 0'>
-                <StackLayout orientation='horizontal' class='saved-cities'>
-                    <template v-for='(item, index) in savedCities'>
-                        <StackLayout orientation='horizontal' verticalAlignment='middle' class='city-item' :key='index'>
-                            <Button
-                                android:class='andro-city-btn'
-                                ios:class='ios-city-btn'
-                                :text='item.split("+").join(" ")'
-                                @tap='toWeather(item)'></Button>
-                            <StackLayout
-                                height='30'
-                                verticalAlignment='middle'
-                                class='remove-btn'
-                                @tap='removeCity(item, index)'>
-                                <Image src='~/images/icon-close.png' height='10' width='10'></Image>
-                            </StackLayout>
-                        </StackLayout>
-                    </template>
-                </StackLayout>
-            </ScrollView>
-
             <StackLayout
                 verticalAlignment='middle'
                 row='1'>
-                <GridLayout 
-                    rows='*, 80' verticalAlignment='center'>
-                    <StackLayout row='0'>
-                        <Image :src='response.image'></Image>
-                        <Label :text='response.temp' class='temp current'></Label>
-                        <Label :text='response.name' class='location'></Label>
-                    </StackLayout>
-
+                    <Image :src='response.image'></Image>
+                    <Label :text='response.temp' class='temp current'></Label>
+                    <Label :text='response.name' class='location'></Label>
                     <FlexboxLayout
                         row='1'
                         alignItems='flex-end'
@@ -64,8 +38,29 @@
                         <Label :text='"min " + response.min' class='temp min'></Label>
                         <Label :text='"max " + response.max' class='temp max'></Label>
                     </FlexboxLayout>
-                </GridLayout>
             </StackLayout>
+
+            <ScrollView row='0' orientation='horizontal' class='saved-cities-wrapper' v-if='savedCities.length > 0'>
+                <StackLayout orientation='horizontal' class='saved-cities'>
+                    <template v-for='(item, index) in savedCities'>
+                        <StackLayout orientation='horizontal' verticalAlignment='middle' class='city-item' :key='index'>
+                            <StackLayout orientation='horizontal' verticalAlignment='middle'>
+                                <Label
+                                    class='city-btn'
+                                    :text='item.split("+").join(" ")'
+                                    @tap='toWeather(item)'
+                                    ></Label>
+                                <StackLayout
+                                    verticalAlignment='middle'
+                                    class='remove-btn'
+                                    @tap='removeCity(item, index)'>
+                                    <Image src='~/images/icon-close.png' height='10' width='10'></Image>
+                                </StackLayout>
+                            </StackLayout>
+                        </StackLayout>
+                    </template>
+                </StackLayout>
+            </ScrollView>
         </GridLayout>
     </Page>
 </template>
@@ -125,7 +120,7 @@
                 if (localCities) {
                     const list = localCities.split(' ')
                     if (!list.includes(this.city)) {
-                        appSettings.setString('city', localCities + ' ' + this.city)
+                        appSettings.setString('city', this.city + ' ' + localCities)
                         this.savedCities.unshift(this.city)
                     }
                 } else {
@@ -165,18 +160,18 @@
 }
 
 Label {
-    font-family: 'Quicksand';
+    font-family: 'Quicksand-Regular';
     text-align: center;
     font-weight: 300;
     color: black;
 }
 
 .temperature-container {
-    height: 80;
+    margin: 10 0;
 }
 
 .temp.current {
-    font-family: 'Lato';
+    font-family: 'Lato-Regular';
     font-size: 45;
     font-weight: 400;
 }
@@ -184,12 +179,12 @@ Label {
 .temp.min,
 .temp.max {
     font-size: 20;
-    font-family: 'Quicksand';
+    font-family: 'Quicksand-Regular';
 }
 
 .location {
     font-size: 20;
-    font-weight: 300;
+    font-family: 'Quicksand-Regular';
     text-transform: uppercase;
     margin: 20 0;
 }
@@ -210,6 +205,9 @@ Image {
 .city-item {
     padding: 0;
     margin: 0 12;
+    border-width: 1;
+    border-radius: 50%;
+    padding: 0 15 0 10;
 }
 
 .close-btn {
@@ -217,12 +215,10 @@ Image {
     width: 30;
 }
 
-
 .remove-btn {
     border-radius: 0;
-    background-color: transparent;
-    margin: 0 0 0 6;
     padding: 0;
+    margin: 3 0 0 0;
 }
 
 .btn {
@@ -235,22 +231,15 @@ Image {
     margin: 0;
 }
 
-.ios-city-btn {
-    font-family: 'Lato';
+.city-btn {
+    font-family: 'Lato-Bold';
     color: black;
-    font-weight: bold;
-}
-
-.andro-city-btn {
-    color: #6bc5da;
-    border-width: 1;
-    border-color: #6bc5da;
-    border-radius: 50;
-    padding: 0 10 0 10;
-    min-height: 26;
-    height: 26;
-    line-height: 12;
+    background-color: white;
     text-transform: capitalize;
     margin: 8;
+    padding: 0 10 0 0;
+    font-size: 15;
+    border-color: transparent;
+    border-width: 1;
 }
 </style>
