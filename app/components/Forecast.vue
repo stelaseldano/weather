@@ -1,40 +1,58 @@
 <template>
-    <Page actionBarHidden='true'
+    <Page
+        actionBarHidden='true'
         enableSwipeBackNavigation='false'
         backgroundSpanUnderStatusBar='true'>
+
         <GridLayout
             rows='50, *, 50'
-            class='view-container'>
+            class='view'>
 
             <SavedCities row='0' :city='city' />
 
             <StackLayout
                 verticalAlignment='middle'
                 row='1'>
+
                     <Image :src='response.image'></Image>
-                    <Label :text='response.temp' android:class='temp current andro' ios:class='temp current ios'></Label>
-                    <Label :text='response.name' android:class='location andro' ios:class='location ios'></Label>
+                    <Label
+                        :text='response.temp'
+                        android:class='temp current andro' ios:class='temp current ios'></Label>
+
+                    <Label
+                        :text='response.name'
+                        android:class='location andro' ios:class='location ios'></Label>
+
                     <FlexboxLayout
                         row='1'
                         alignItems='flex-end'
                         justifyContent='space-around'
                         class='temperature-container'>
-                        <Label :text='"min " + response.min' android:class='temp min andro' ios:class='temp min ios'></Label>
-                        <Label :text='"max " + response.max' android:class='temp max andro' ios:class='temp max ios'></Label>
+
+                        <Label
+                            :text='"min " + response.min'
+                            android:class='temp min andro' ios:class='temp min ios'></Label>
+                        <Label
+                            :text='"max " + response.max'
+                            android:class='temp max andro' ios:class='temp max ios'></Label>
                     </FlexboxLayout>
             </StackLayout>
 
-            <FlexboxLayout
+            <StackLayout
                 row='2'
-                justifyContent='space-between'
-                margin='0 20'>
-                <StackLayout>
+                horizontalAlignment='right'>
+
+                <FlexboxLayout
+                    class='search'
+                    justifyContent='center'
+                    alignItems='center'
+                    @tap='toSearch'>
+
                     <Label
-                        class='fa'
-                        :text="'fa-search' | fonticon"
-                        @tap='toSearch'></Label>
-                </StackLayout>
-            </FlexboxLayout>
+                        :text='"fa-search" | fonticon'
+                        class='fa fa-icon'></Label>
+                </FlexboxLayout>
+            </StackLayout>
         </GridLayout>
     </Page>
 </template>
@@ -71,15 +89,15 @@
 
 <style scoped>
 
-.view-container {
-    margin: 10 0 0 0;
+.view {
+    margin: 10 0;
 }
 
 Label {
-    font-family: 'Quicksand';
-    text-align: center;
-    font-weight: 300;
     color: black;
+    font-family: 'Quicksand';
+    font-weight: 400;
+    text-align: center;
 }
 
 .fa {
@@ -117,8 +135,8 @@ Label {
 
 .location {
     font-size: 20;
-    text-transform: uppercase;
     margin: 20 0;
+    text-transform: uppercase;
 }
 
 .location.andro {
@@ -132,5 +150,17 @@ Label {
 Image {
     height: 250;
     width: 250;
+}
+
+.search {
+    color: #6bc5da;
+    height: 60;
+    margin: 0 10 0 0;
+    width: 60;
+}
+
+.search .fa-icon {
+    font-size: 18;
+    color: #6bc5da;
 }
 </style>

@@ -9,13 +9,12 @@
     const appSettings = require("tns-core-modules/application-settings")
     const accuracy = require("tns-core-modules/ui/enums")
     import Search from './Search'
-    import Weather from './Weather'
-    import { mixin } from '../mixins'
+    import { fetch } from '../fetch'
     import { baseUrl } from '../url'
 
     export default {
-        name: 'Start',
-        mixins: [mixin],
+        name: 'Main',
+        mixins: [fetch],
         created() {
             geolocation.enableLocationRequest()
                 .then(res => {

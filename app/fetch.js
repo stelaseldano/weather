@@ -1,7 +1,7 @@
 import { fetchForecast } from './upstream'
-import Weather from './components/Weather'
+import Forecast from './components/Forecast'
 
-export const mixin = {
+export const fetch = {
     data() {
         return {
             locationError: false,
@@ -13,7 +13,7 @@ export const mixin = {
             fetchForecast(url)
                 .then(data => {
                     if (data.cod === 200) {
-                        this.$navigateTo(Weather, {
+                        this.$navigateTo(Forecast, {
                             transition: {
                                 name: 'fade'
                             },

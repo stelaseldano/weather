@@ -1,31 +1,46 @@
 <template>
     <ScrollView orientation='horizontal'>
         <StackLayout orientation='horizontal'>
-            <StackLayout orientation='horizontal' verticalAlignment='middle' class='city-item' v-if='cityInSaved'>
+
+            <StackLayout
+                v-if='cityInSaved'
+                orientation='horizontal'
+                verticalAlignment='middle'
+                class='city-item current'>
+
                 <Label
-                    android:class='city-btn andro'
-                    ios:class='city-btn ios'
                     :text='city.split("+").join(" ")'
-                    ></Label>
+                    android:class='city-link andro' ios:class='city-link ios'></Label>
+
                 <StackLayout
                     verticalAlignment='middle'
                     @tap='saveCity'>
-                    <Label class='fa' :text="'fa-check' | fonticon"></Label>
+
+                    <Label
+                        :text='"fa-check" | fonticon'
+                        class='fa fa-icon'></Label>
                 </StackLayout>
             </StackLayout>
+
             <template v-for='(item, index) in savedCities'>
-                <StackLayout orientation='horizontal' verticalAlignment='middle' class='city-item' :key='index'>
+                <StackLayout
+                    :key='index'
+                    orientation='horizontal'
+                    verticalAlignment='middle'
+                    class='city-item'>
+
                     <Label
-                        android:class='city-btn andro'
-                        ios:class='city-btn ios'
                         :text='item.split("+").join(" ")'
-                        @tap='toWeather(item)'
-                        ></Label>
+                        android:class='city-link andro' ios:class='city-link ios'
+                        @tap='toForecast(item)'></Label>
+
                     <StackLayout
                         verticalAlignment='middle'
                         class='remove-btn'
                         @tap='removeCity(item, index)'>
-                        <Label class='fa' :text="'fa-close' | fonticon"></Label>
+                        <Label
+                            :text='"fa-close" | fonticon'
+                            class='fa fa-icon'></Label>
                     </StackLayout>
                 </StackLayout>
             </template>
@@ -35,8 +50,8 @@
 
 <script>
 const appSettings = require("tns-core-modules/application-settings")
-import Weather from './Weather'
-import { mixin } from '../mixins'
+import Forecast from './Forecast'
+import { fetch } from '../fetch'
 import { baseUrl } from '../url'
 
 export default {
@@ -44,7 +59,7 @@ export default {
         city: String
     },
     components: {
-        Weather
+        Forecast
     },
     data() {
         return {
@@ -52,7 +67,7 @@ export default {
             cityInSaved: false
         }
     },
-    mixins: [mixin],
+    mixins: [fetch],
     created() {
         this.savedCities = this.getSavedCities()
 
@@ -102,7 +117,7 @@ export default {
 
             return []
         },
-        toWeather(city) {
+        toForecast(city) {
             let url = baseUrl + '&units=metric' + '&q=' + city
 
             this.getData(url)
@@ -113,44 +128,43 @@ export default {
 
 <style scoped>
 .city-item {
-    padding: 0;
-    margin: 0 12;
+    border-color: black;
     border-width: 1;
     border-radius: 50%;
-    padding: 0 12 0 7;
+    margin: 0 10;
+    padding: 0 7;
 }
 
-.remove-btn {
-    border-radius: 0;
-    padding: 0;
-}
-
-.btn {
-    color: white;
-    min-height: 32;
-    min-width: 64;
-    padding: 7;
-    font-size: 14;
-    margin: 0;
-}
-
-.city-btn {
-    color: black;
-    background-color: white;
-    text-transform: capitalize;
-    margin: 8;
-    padding: 0 10 0 0;
-    font-size: 14;
-    border-color: transparent;
+.city-item.current {
+    border-color: white;
     border-width: 1;
 }
 
-.city-btn.andro {
+.city-link {
+    background-color: transparent;
+    border-color: transparent;
+    border-width: 1;
+    color: black;
+    font-size: 14;
+    margin: 8;
+    padding: 0;
+    text-transform: capitalize;
+}
+
+.city-link.andro {
     font-family: 'Lato-Bold';
 }
 
-.city-btn.ios {
+.city-link.ios {
     font-family: 'Lato';
     font-weight: bold;
+}
+
+.fa-icon {
+    border-radius: 0;
+    color: black;
+    font-size: 13;
+    margin: 0 0 0 3;
+    padding: 6;
 }
 </style>

@@ -1,40 +1,41 @@
 <template>
     <Page
         actionBarHidden='true'>
+
         <GridLayout rows='100, *'>
+
             <StackLayout row='0'>
                 <Label
                     v-if='locationError'
-                    class='error-message'
-                    :text='locErrorMessage'></Label>
+                    :text='locErrorMessage'
+                    class='error-message'></Label>
             </StackLayout>
+
             <StackLayout row='1'>
                 <TextField
-                    ref='s'
+                    hint='enter location'
                     v-model='city'
                     @returnPress='search'
                     @focus='onFocus'
                     @blur='isFocused = false'
-                    hint='enter location'></TextField>
+                    android:class='textfield andro' ios:class='textfield ios'></TextField>
             </StackLayout>
         </GridLayout>
     </Page>
 </template>
 
 <script>
-    import Weather from './Weather'
-    import { fetchForecast } from '../upstream'
-    import { mixin } from '../mixins'
+    import Forecast from './Forecast'
+    import { fetch } from '../fetch'
     import { baseUrl } from '../url'
 
     export default {
         components: {
-            Weather
+            Forecast
         },
-        mixins: [mixin],
+        mixins: [fetch],
         data() {
             return {
-                url: '',
                 isFocused: false,
                 city: '',
             }
@@ -44,9 +45,9 @@
                 let city = this.city ? this.city.toLowerCase().trim().split(' ').join('+') : ''
 
                 if (city) {
-                    this.url = baseUrl + '&units=metric&q=' + city
+                    let url = baseUrl + '&units=metric&q=' + city
 
-                    this.getData(this.url)
+                    this.getData(url)
                 } else {
                     this.locationError = true
                     this.locErrorMessage = 'nothing entered 🤔'
@@ -68,30 +69,36 @@ GridLayout {
 }
 
 .error-message {
-    background-color: #6bc5da;
     animation-name: pulse;
     animation-duration: 0.3s;
-    padding: 20 30;
+    background-color: #6bc5da;
     border-radius: 10;
-    margin: 0;
-    font-family: 'Lato';
     color: white;
+    font-family: 'Lato';
     font-weight: bold;
+    padding: 20 30;
+    margin: 0;
     text-align: center;
-    width: 400;
+    width: 80%;
 }
 
 TextField {
-    border-width: 2;
-    border-color: #6bc5da;
     background-color: white;
-    font-family: 'Quicksand';
-    padding: 20 30;
+    border-color: #6bc5da;
     border-radius: 50;
+    border-width: 2;
     font-size: 20;
     font-weight: bold;
-    text-transform: uppercase;
-    width: 300;
+    padding: 20 30;
     margin: 50 30 0 30;
+    width: 300;
+}
+
+.textfield.andro {
+    font-family: 'Quicksand-Regular';
+}
+
+.textfield.ios {
+    font-family: 'Quicksand';
 }
 </style>
