@@ -5,24 +5,8 @@
         <GridLayout
             rows='50, *, 50'
             class='view-container'>
-            <FlexboxLayout
-                row='2'
-                justifyContent='space-between'
-                margin='0 20'>
-                <StackLayout>
-                    <Label
-                        class='fa'
-                        v-if='showSaveButton'
-                        :text='"fa-check" | fonticon'
-                        @tap='saveCity'></Label>
-                </StackLayout>
-                <StackLayout>
-                    <Label
-                        class='fa'
-                        :text="'fa-search' | fonticon"
-                        @tap='toSearch'></Label>
-                </StackLayout>
-            </FlexboxLayout>
+
+            <SavedCities row='0' :city='city' />
 
             <StackLayout
                 verticalAlignment='middle'
@@ -40,28 +24,17 @@
                     </FlexboxLayout>
             </StackLayout>
 
-            <ScrollView row='0' orientation='horizontal'  v-if='savedCities.length > 0'>
-                <StackLayout orientation='horizontal'>
-                    <template v-for='(item, index) in savedCities'>
-                        <StackLayout orientation='horizontal' verticalAlignment='middle' class='city-item' :key='index'>
-                            <StackLayout orientation='horizontal' verticalAlignment='middle'>
-                                <Label
-                                    android:class='city-btn andro'
-                                    ios:class='city-btn ios'
-                                    :text='item.split("+").join(" ")'
-                                    @tap='toWeather(item)'
-                                    ></Label>
-                                <StackLayout
-                                    verticalAlignment='middle'
-                                    class='remove-btn'
-                                    @tap='removeCity(item, index)'>
-                                    <Label class='fa' :text="'fa-close' | fonticon"></Label>
-                                </StackLayout>
-                            </StackLayout>
-                        </StackLayout>
-                    </template>
+            <FlexboxLayout
+                row='2'
+                justifyContent='space-between'
+                margin='0 20'>
+                <StackLayout>
+                    <Label
+                        class='fa'
+                        :text="'fa-search' | fonticon"
+                        @tap='toSearch'></Label>
                 </StackLayout>
-            </ScrollView>
+            </FlexboxLayout>
         </GridLayout>
     </Page>
 </template>
@@ -69,44 +42,20 @@
 <script>
     const appSettings = require("tns-core-modules/application-settings")
     import Search from './Search'
-    import Weather from './Weather'
-    import { mixin } from '../mixins'
-    import { baseUrl } from '../url'
+    import SavedCities from './SavedCities'
 
     export default {
         name: 'Weather',
         components: {
             Search,
-            Weather
+            SavedCities
         },
-        mixins: [mixin],
         props: {
             response: Object,
-        },
-        data() {
-            return {
-                savedCities: [],
-                showSaveButton: true,
-            }
+            city: ''
         },
         created() {
-            this.savedCities = this.getSavedCities()
             this.city = this.response.name.split(' ').join('+')
-
-            if (this.savedCities.includes(this.city)) {
-                this.showSaveButton = false
-            } else {
-                this.showSaveButton = true
-            }
-        },
-        watch: {
-            savedCities(newState) {
-                if (newState.includes(this.city)) {
-                    this.showSaveButton = false
-                } else {
-                    this.showSaveButton = true
-                }
-            }
         },
         methods: {
             toSearch() {
@@ -116,41 +65,6 @@
                     }
                 })
             },
-            saveCity() {
-                const localCities = appSettings.getString('city')
-
-                if (localCities) {
-                    const list = localCities.split(' ')
-                    if (!list.includes(this.city)) {
-                        appSettings.setString('city', this.city + ' ' + localCities)
-                        this.savedCities.unshift(this.city)
-                    }
-                } else {
-                    appSettings.setString('city', this.city)
-                    this.savedCities.unshift(this.city)
-                }
-            },
-            removeCity(item, index) {
-                const localCities = appSettings.getString('city')
-                let list = localCities.split(' ')
-                list.splice(index, 1)
-                appSettings.setString('city', list.join(' '))
-                this.savedCities.splice(index, 1)
-            },
-            toWeather(city) {
-                let url = baseUrl + '&units=metric' + '&q=' + city
-
-                this.getData(url)
-            },
-            getSavedCities() {
-                const localCities = appSettings.getString('city')
-
-                if (localCities) {
-                    return localCities.split(' ')
-                }
-
-                return []
-            }
         }
     }
 </script>
@@ -177,7 +91,7 @@ Label {
 }
 
 .temp.current {
-    font-size: 45;
+    font-size: 40;
 }
 
 .temp.current.andro {
@@ -186,6 +100,7 @@ Label {
 
 .temp.current.ios {
     font-family: 'Lato';
+    font-weight: 400;
 }
 
 .temp {
@@ -217,48 +132,5 @@ Label {
 Image {
     height: 250;
     width: 250;
-}
-
-.city-item {
-    padding: 0;
-    margin: 0 12;
-    border-width: 1;
-    border-radius: 50%;
-    padding: 0 15 0 10;
-}
-
-.remove-btn {
-    border-radius: 0;
-    padding: 0;
-}
-
-.btn {
-    color: white;
-    background-color: #6bc5da;
-    min-height: 36;
-    min-width: 64;
-    padding: 10 10 10 10;
-    font-size: 14;
-    margin: 0;
-}
-
-.city-btn {
-    color: black;
-    background-color: white;
-    text-transform: capitalize;
-    margin: 8;
-    padding: 0 10 0 0;
-    font-size: 15;
-    border-color: transparent;
-    border-width: 1;
-}
-
-.city-btn.andro {
-    font-family: 'Lato-Bold';
-}
-
-.city-btn.ios {
-    font-family: 'Lato';
-    font-weight: bold;
 }
 </style>
