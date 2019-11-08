@@ -25,6 +25,7 @@
     import Weather from './Weather'
     import { fetchForecast } from '../upstream'
     import { mixin } from '../mixins'
+    import { baseUrl } from '../url'
 
     export default {
         components: {
@@ -43,7 +44,7 @@
                 let city = this.city ? this.city.toLowerCase().trim().split(' ').join('+') : ''
 
                 if (city) {
-                    this.url = 'https://api.openweathermap.org/data/2.5/weather?APPID=23d7e462a71259d53863dd33e91b5431&units=metric&q=' + city
+                    this.url = baseUrl + '&units=metric&q=' + city
 
                     this.getData(this.url)
                 } else {
