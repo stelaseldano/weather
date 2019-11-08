@@ -10,17 +10,17 @@
                 justifyContent='space-between'
                 margin='0 20'>
                 <StackLayout>
-                    <Button
-                        android:class='btn btn-primary'
+                    <Label
+                        class='fa'
                         v-if='showSaveButton'
-                        text='save city'
-                        @tap='saveCity'></Button>
+                        :text='"fa-check" | fonticon'
+                        @tap='saveCity'></Label>
                 </StackLayout>
                 <StackLayout>
-                    <Button
-                        android:class='btn btn-primary'
-                        text='search'
-                        @tap='toSearch'></Button>
+                    <Label
+                        class='fa'
+                        :text="'fa-search' | fonticon"
+                        @tap='toSearch'></Label>
                 </StackLayout>
             </FlexboxLayout>
 
@@ -28,25 +28,26 @@
                 verticalAlignment='middle'
                 row='1'>
                     <Image :src='response.image'></Image>
-                    <Label :text='response.temp' class='temp current'></Label>
-                    <Label :text='response.name' class='location'></Label>
+                    <Label :text='response.temp' android:class='temp current andro' ios:class='temp current ios'></Label>
+                    <Label :text='response.name' android:class='location andro' ios:class='location ios'></Label>
                     <FlexboxLayout
                         row='1'
                         alignItems='flex-end'
                         justifyContent='space-around'
                         class='temperature-container'>
-                        <Label :text='"min " + response.min' class='temp min'></Label>
-                        <Label :text='"max " + response.max' class='temp max'></Label>
+                        <Label :text='"min " + response.min' android:class='temp min andro' ios:class='temp min ios'></Label>
+                        <Label :text='"max " + response.max' android:class='temp max andro' ios:class='temp max ios'></Label>
                     </FlexboxLayout>
             </StackLayout>
 
-            <ScrollView row='0' orientation='horizontal' class='saved-cities-wrapper' v-if='savedCities.length > 0'>
-                <StackLayout orientation='horizontal' class='saved-cities'>
+            <ScrollView row='0' orientation='horizontal'  v-if='savedCities.length > 0'>
+                <StackLayout orientation='horizontal'>
                     <template v-for='(item, index) in savedCities'>
                         <StackLayout orientation='horizontal' verticalAlignment='middle' class='city-item' :key='index'>
                             <StackLayout orientation='horizontal' verticalAlignment='middle'>
                                 <Label
-                                    class='city-btn'
+                                    android:class='city-btn andro'
+                                    ios:class='city-btn ios'
                                     :text='item.split("+").join(" ")'
                                     @tap='toWeather(item)'
                                     ></Label>
@@ -54,7 +55,7 @@
                                     verticalAlignment='middle'
                                     class='remove-btn'
                                     @tap='removeCity(item, index)'>
-                                    <Image src='~/images/icon-close.png' height='10' width='10'></Image>
+                                    <Label class='fa' :text="'fa-close' | fonticon"></Label>
                                 </StackLayout>
                             </StackLayout>
                         </StackLayout>
@@ -160,10 +161,14 @@
 }
 
 Label {
-    font-family: 'Quicksand-Regular';
+    font-family: 'Quicksand';
     text-align: center;
     font-weight: 300;
     color: black;
+}
+
+.fa {
+   font-family: "FontAwesome", "fontawesome-webfont";
 }
 
 .temperature-container {
@@ -171,35 +176,46 @@ Label {
 }
 
 .temp.current {
-    font-family: 'Lato-Regular';
     font-size: 45;
-    font-weight: 400;
 }
 
-.temp.min,
-.temp.max {
+.temp.current.andro {
+    font-family: 'Lato-Regular'
+}
+
+.temp.current.ios {
+    font-family: 'Lato';
+}
+
+.temp {
     font-size: 20;
-    font-family: 'Quicksand-Regular';
+}
+
+.temp.ios {
+    font-family: 'Quicksand'
+}
+
+.temp.andro {
+    font-family: 'Quicksand-Regular'
 }
 
 .location {
     font-size: 20;
-    font-family: 'Quicksand-Regular';
     text-transform: uppercase;
     margin: 20 0;
+}
+
+.location.andro {
+    font-family: 'Quicksand-Regular';
+}
+
+.location.ios {
+    font-family: 'Quicksand';
 }
 
 Image {
     height: 250;
     width: 250;
-}
-
-.saved-cities-wrapper {
-    background-color: white;
-}
-
-.saved-cities {
-    margin: 0;
 }
 
 .city-item {
@@ -210,15 +226,9 @@ Image {
     padding: 0 15 0 10;
 }
 
-.close-btn {
-    height: 30;
-    width: 30;
-}
-
 .remove-btn {
     border-radius: 0;
     padding: 0;
-    margin: 3 0 0 0;
 }
 
 .btn {
@@ -232,7 +242,6 @@ Image {
 }
 
 .city-btn {
-    font-family: 'Lato-Bold';
     color: black;
     background-color: white;
     text-transform: capitalize;
@@ -241,5 +250,14 @@ Image {
     font-size: 15;
     border-color: transparent;
     border-width: 1;
+}
+
+.city-btn.andro {
+    font-family: 'Lato-Bold';
+}
+
+.city-btn.ios {
+    font-family: 'Lato';
+    font-weight: bold;
 }
 </style>
