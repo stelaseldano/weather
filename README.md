@@ -10,6 +10,9 @@ Coming soon
 
 ## Development
 
+Please make sure you have Node.js and NativeScript installed
+If not, you can find these [instructions](https://docs.nativescript.org/start/quick-setup/) helpful
+
 * install the dependencies
 
   * `npm install`
