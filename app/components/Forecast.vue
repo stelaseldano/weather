@@ -14,14 +14,17 @@
                 verticalAlignment='middle'
                 row='1'>
 
-                    <Image :src='response.image'></Image>
+                    <Image
+                        :src='response.image'
+                        class='image'></Image>
+
                     <Label
                         :text='response.temp'
-                        android:class='temp current andro' ios:class='temp current ios'></Label>
+                        android:class='temp--current temp--current--andro' ios:class='temp--current temp--current--ios'></Label>
 
                     <Label
                         :text='response.name'
-                        android:class='location andro' ios:class='location ios'></Label>
+                        android:class='location location--andro' ios:class='location location--ios'></Label>
 
                     <FlexboxLayout
                         row='1'
@@ -31,10 +34,10 @@
 
                         <Label
                             :text='"min " + response.min'
-                            android:class='temp min andro' ios:class='temp min ios'></Label>
+                            android:class='temp temp--andro' ios:class='temp temp--ios'></Label>
                         <Label
                             :text='"max " + response.max'
-                            android:class='temp max andro' ios:class='temp max ios'></Label>
+                            android:class='temp temp--andro' ios:class='temp temp--ios'></Label>
                     </FlexboxLayout>
             </StackLayout>
 
@@ -50,7 +53,7 @@
 
                     <Label
                         :text='"fa-search" | fonticon'
-                        class='fa fa-icon'></Label>
+                        class='fa search__icon'></Label>
                 </FlexboxLayout>
             </StackLayout>
         </GridLayout>
@@ -108,15 +111,15 @@ Label {
     margin: 10 0;
 }
 
-.temp.current {
+.temp--current {
     font-size: 40;
 }
 
-.temp.current.andro {
+.temp--current--andro {
     font-family: 'Lato-Regular'
 }
 
-.temp.current.ios {
+.temp--current--ios {
     font-family: 'Lato';
     font-weight: 400;
 }
@@ -125,11 +128,11 @@ Label {
     font-size: 20;
 }
 
-.temp.ios {
+.temp--ios {
     font-family: 'Quicksand'
 }
 
-.temp.andro {
+.temp--andro {
     font-family: 'Quicksand-Regular'
 }
 
@@ -139,15 +142,15 @@ Label {
     text-transform: uppercase;
 }
 
-.location.andro {
+.location--andro {
     font-family: 'Quicksand-Regular';
 }
 
-.location.ios {
+.location--ios {
     font-family: 'Quicksand';
 }
 
-Image {
+.image {
     height: 250;
     width: 250;
 }
@@ -159,7 +162,7 @@ Image {
     width: 60;
 }
 
-.search .fa-icon {
+.search__icon {
     font-size: 18;
     color: #6bc5da;
 }

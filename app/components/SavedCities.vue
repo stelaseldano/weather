@@ -6,11 +6,11 @@
                 v-if='cityInSaved'
                 orientation='horizontal'
                 verticalAlignment='middle'
-                class='city-item current'>
+                class='city city--current'>
 
                 <Label
                     :text='city.split("+").join(" ")'
-                    android:class='city-link andro' ios:class='city-link ios'></Label>
+                    android:class='city__link city__link--andro' ios:class='city__link city__link--ios'></Label>
 
                 <StackLayout
                     verticalAlignment='middle'
@@ -18,7 +18,7 @@
 
                     <Label
                         :text='"fa-check" | fonticon'
-                        class='fa fa-icon'></Label>
+                        class='fa city__icon'></Label>
                 </StackLayout>
             </StackLayout>
 
@@ -27,20 +27,20 @@
                     :key='index'
                     orientation='horizontal'
                     verticalAlignment='middle'
-                    class='city-item'>
+                    class='city'>
 
                     <Label
                         :text='item.split("+").join(" ")'
-                        android:class='city-link andro' ios:class='city-link ios'
+                        android:class='city__link city__link--andro' ios:class='city__link city__link--ios'
                         @tap='toForecast(item)'></Label>
 
                     <StackLayout
                         verticalAlignment='middle'
-                        class='remove-btn'
+                        class='button button--action-delete'
                         @tap='removeCity(item, index)'>
                         <Label
                             :text='"fa-close" | fonticon'
-                            class='fa fa-icon'></Label>
+                            class='fa city__icon'></Label>
                     </StackLayout>
                 </StackLayout>
             </template>
@@ -127,7 +127,8 @@ export default {
 </script>
 
 <style scoped>
-.city-item {
+
+.city {
     border-color: black;
     border-width: 1;
     border-radius: 50%;
@@ -135,12 +136,12 @@ export default {
     padding: 0 7;
 }
 
-.city-item.current {
+.city--current {
     border-color: white;
     border-width: 1;
 }
 
-.city-link {
+.city__link {
     background-color: transparent;
     border-color: transparent;
     border-width: 1;
@@ -151,16 +152,16 @@ export default {
     text-transform: capitalize;
 }
 
-.city-link.andro {
+.city__link--andro {
     font-family: 'Lato-Bold';
 }
 
-.city-link.ios {
+.city__link--ios {
     font-family: 'Lato';
     font-weight: bold;
 }
 
-.fa-icon {
+.city__icon {
     border-radius: 0;
     color: black;
     font-size: 13;

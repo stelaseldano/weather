@@ -2,7 +2,9 @@
     <Page
         actionBarHidden='true'>
 
-        <GridLayout rows='100, *'>
+        <GridLayout
+            rows='100, *'
+            class='view'>
 
             <StackLayout row='0'>
                 <Label
@@ -18,7 +20,7 @@
                     @returnPress='search'
                     @focus='onFocus'
                     @blur='isFocused = false'
-                    android:class='textfield andro' ios:class='textfield ios'></TextField>
+                    android:class='textfield textfield--andro' ios:class='textfield textfield--ios'></TextField>
             </StackLayout>
         </GridLayout>
     </Page>
@@ -63,7 +65,7 @@
 
 <style scoped> 
 
-GridLayout {
+.view {
     height: 100%;
     margin: 50 20 0 20;
 }
@@ -82,7 +84,7 @@ GridLayout {
     width: 80%;
 }
 
-TextField {
+.textfield {
     background-color: white;
     border-color: #6bc5da;
     border-radius: 50;
@@ -94,11 +96,11 @@ TextField {
     width: 300;
 }
 
-.textfield.andro {
+.textfield--andro {
     font-family: 'Quicksand-Regular';
 }
 
-.textfield.ios {
+.textfield--ios {
     font-family: 'Quicksand';
 }
 </style>
